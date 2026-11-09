@@ -7,7 +7,6 @@ import com.screenprog.application.dtos.WithdrawDTO;
 import com.screenprog.application.email_service.EmailService;
 import com.screenprog.application.model.*;
 import com.screenprog.application.repo.*;
-import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +19,10 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -111,9 +113,17 @@ public class UserService {
     /*TODO: Test this end point and it's new functionality of working with pin*/
     @Transactional
     public String transferAmount(TransferDTO transferDTO) {
-        Account accountOfReceiver = getAccount(transferDTO.accountIdOfReceiver());
-        Account accountOfSender = getAccount(transferDTO.accountIdOfSender());
-
+        Account accountOfReceiver = null;
+        Account accountOfSender = null;
+        if (transferDTO.accountIdOfReceiver() < transferDTO.accountIdOfSender()){
+            accountOfReceiver = getAccount(transferDTO.accountIdOfReceiver());
+            accountOfSender = getAccount(transferDTO.accountIdOfSender());
+        }
+        else {
+            accountOfSender = getAccount(transferDTO.accountIdOfSender());
+            accountOfReceiver = getAccount(transferDTO.accountIdOfReceiver());
+        }
+        
         if (accountOfSender == null)
             return "Sender account is incorrect";
         if(!encoder.matches(transferDTO.pin(), accountOfSender.getCard().getPin()))
@@ -145,7 +155,7 @@ public class UserService {
     }
 
     private Account getAccount(Long accountNumber) {
-        return accountRepository.findById(accountNumber).orElse(null);
+        return accountRepository.findByAccountNumberWithLock(accountNumber).orElse(null);
     }
 
     private final Random random = new Random();
@@ -216,7 +226,7 @@ public class UserService {
 
     /*TODO: Test this function*/
     public List<Transaction> getTransactionHistory(Long accountNumber) {
-        return transactionsRepository.findAllByAccountId(getAccount(accountNumber));
+        return transactionsRepository.findAllByAccountId(accountRepository.findById(accountNumber).orElse(null));
     }
 
     public Optional<Customer> getCustomer(Long id) {

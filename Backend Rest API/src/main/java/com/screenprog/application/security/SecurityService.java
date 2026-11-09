@@ -1,27 +1,18 @@
 package com.screenprog.application.security;
 
-import org.springframework.stereotype.Service;
-
-import com.screenprog.application.model.Customer;
 import com.screenprog.application.repo.AccountRepository;
-import com.screenprog.application.repo.CustomerRepository;
-
-import java.util.Objects;
-import java.util.Optional;
+import org.springframework.stereotype.Service;
 
 @Service
 public class SecurityService {
-    private final CustomerRepository customerRepository;
+    private final AccountRepository accountRepository;
 
-    public SecurityService(CustomerRepository customerRepository) {
-        this.customerRepository = customerRepository;
+    public SecurityService(AccountRepository accountRepository) {
+        this.accountRepository = accountRepository;
     }
 
     public boolean ownsAccount(String username, Long accountNumber) {
-        Customer byEmail = customerRepository.findByCustomerID(Long.valueOf(username));
-        return byEmail != null && byEmail.getAccount()
-                .stream()
-                .anyMatch(account -> account.getAccountNumber().equals(accountNumber));
+        return accountRepository.existsByAccountNumberAndCustomer_CustomerID(accountNumber, Long.valueOf(username));
     }
 
     public boolean ownsCustomerId(String username, Long customerId){

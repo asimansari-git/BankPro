@@ -1,6 +1,9 @@
 package com.screenprog.application.service;
 
-import com.screenprog.application.dtos.*;
+import com.screenprog.application.dtos.AccountDTO;
+import com.screenprog.application.dtos.ChangePasswordDTO;
+import com.screenprog.application.dtos.CustomerDTO;
+import com.screenprog.application.dtos.TransferDTO;
 import com.screenprog.application.email_service.EmailService;
 import com.screenprog.application.for_optimization.AccountDetails;
 import com.screenprog.application.for_optimization.CustomerDetails;
@@ -25,7 +28,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
 
 import static com.screenprog.application.security.BCryptEncryption.encoder;
 

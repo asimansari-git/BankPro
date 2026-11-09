@@ -2,7 +2,10 @@ package com.screenprog.application.service;
 
 import com.screenprog.application.dtos.CustomerDTO;
 import com.screenprog.application.email_service.EmailService;
-import com.screenprog.application.model.*;
+import com.screenprog.application.model.Application;
+import com.screenprog.application.model.ApplicationStatus;
+import com.screenprog.application.model.Customer;
+import com.screenprog.application.model.Users;
 import com.screenprog.application.repo.ApplicationsRepository;
 import com.screenprog.application.repo.CustomerRepository;
 import com.screenprog.application.repo.UsersRepository;
